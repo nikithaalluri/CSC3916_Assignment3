@@ -152,6 +152,20 @@ router.route('/movies')
         }
     });
 
+router.get('/movies/:movieTitle', authJwtController.isAuthenticated, async (req, res) => {
+    try {
+        const movieTitle = req.params.movieTitle;
+        const movie = await Movie.findOne({ title: movieTitle });
+
+        if (!movie) {
+            return res.status(404).json({ success: false, message: "Movie not found." });
+        }
+
+        res.status(200).json({ success: true, data: movie });
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Error fetching movie", error: err });
+    }
+});
 
 app.use('/', router);
 
